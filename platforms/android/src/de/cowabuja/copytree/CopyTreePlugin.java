@@ -67,7 +67,7 @@ public class CopyTreePlugin extends CordovaPlugin {
             Activity activity = cordova.getActivity();
             externalFile = DocumentFile.fromTreeUri(
                     activity.getApplicationContext(), intent.getData());
-            Log.i("external directory: " + externalFile.getUri());
+            Log.i(TAG, "external directory: " + externalFile.getUri());
 
             try {
                 CopyService.copy(activity.getContentResolver(), externalFile, internalFile);
