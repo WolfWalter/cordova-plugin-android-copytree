@@ -19,7 +19,7 @@
 
     <platform name="android">
         <config-file target="config.xml" parent="/*">
-            <feature name="CopyTree">
+            <feature name="CopyTreePlugin">
                 <param name="android-package" value="de.cowabuja.copytree.CopyTreePlugin"/>
             </feature>
         </config-file>
