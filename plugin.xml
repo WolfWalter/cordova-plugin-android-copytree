@@ -18,7 +18,7 @@
     </js-module>
 
     <platform name="android">
-        <config-file target="config.xml" parent="/*">
+        <config-file target="res/xml/config.xml" parent="/*">
             <feature name="CopyTreePlugin">
                 <param name="android-package" value="de.cowabuja.copytree.CopyTreePlugin"/>
             </feature>
