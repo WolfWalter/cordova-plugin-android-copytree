@@ -30,7 +30,8 @@ public class CopyTreePlugin extends CordovaPlugin {
         boolean result = false;
         Activity activity = cordova.getActivity();
 
-        internalFile = DocumentFile.fromFile(new File(activity.getCacheDir(), TREE_EXPORT_DIR));
+        DocumentFile cacheDir = DocumentFile.fromFile(activity.getCacheDir());
+        internalFile = cacheDir.createDirectory(TREE_EXPORT_DIR);
         Log.i(TAG, "internal directory: " + internalFile.getUri());
 
         if (action.equals(ACTION_COPY_TO_INTERNAL)) {
