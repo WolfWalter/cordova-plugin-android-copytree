@@ -29,6 +29,7 @@ public class CopyTreePlugin extends CordovaPlugin {
         boolean result = false;
         Activity activity = cordova.getActivity();
         internalFile = DocumentFile.fromFile(new File(activity.getApplicationInfo().dataDir));
+        Log.i(TAG, "internal directory: " + internalFile.getUri());
 
         if (action.equals(ACTION_COPY_TO_INTERNAL)) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
@@ -66,6 +67,7 @@ public class CopyTreePlugin extends CordovaPlugin {
             Activity activity = cordova.getActivity();
             externalFile = DocumentFile.fromTreeUri(
                     activity.getApplicationContext(), intent.getData());
+            Log.i("external directory: " + externalFile.getUri());
 
             try {
                 CopyService.copy(activity.getContentResolver(), externalFile, internalFile);
