@@ -1,4 +1,4 @@
-var copytreeName = 'CopyTree';
+var copytreeName = 'CopyTreePlugin';
 
 function CopyTree() {
 }
