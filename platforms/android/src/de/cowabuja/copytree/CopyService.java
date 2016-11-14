@@ -15,15 +15,16 @@ import java.io.OutputStream;
 public class CopyService {
     private static final String TAG = "CopyService";
 
-    public static void copy(ContentResolver contentResolver, DocumentFile sourceDir, DocumentFile targetDir) throws IOException {
+    public static void copy(ContentResolver contentResolver, DocumentFile sourceDir, DocumentFile targetDir, boolean includeDirs) throws IOException {
         Log.i(TAG, "copy " + sourceDir.getName() + " to " + targetDir.getName());
 
         for (DocumentFile sourceFile : sourceDir.listFiles()) {
-            if (sourceFile.isDirectory()) {
+            if (sourceFile.isDirectory() && includeDirs) {
                 CopyService.copy(
                         contentResolver,
                         sourceFile,
-                        targetDir.createDirectory(sourceFile.getName()));
+                        targetDir.createDirectory(sourceFile.getName()),
+                        includeDirs);
             }
             if (sourceFile.isFile()) {
                 DocumentFile targetFile = targetDir.createFile(

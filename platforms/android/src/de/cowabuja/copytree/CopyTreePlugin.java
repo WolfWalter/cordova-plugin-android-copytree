@@ -51,7 +51,7 @@ public class CopyTreePlugin extends CordovaPlugin {
             }
 
             try {
-                CopyService.copy(activity.getContentResolver(), internalFile, externalFile);
+                CopyService.copy(activity.getContentResolver(), internalFile, externalFile, true);
                 callbackContext.success();
                 result = true;
             } catch (IOException e) {
@@ -76,7 +76,7 @@ public class CopyTreePlugin extends CordovaPlugin {
             Log.i(TAG, "external directory: " + externalFile.getUri());
 
             try {
-                CopyService.copy(activity.getContentResolver(), externalFile, internalFile);
+                CopyService.copy(activity.getContentResolver(), externalFile, internalFile, false);
                 callback.success();
             } catch (IOException e) {
                 callback.error(e.getMessage());
