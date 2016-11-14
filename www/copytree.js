@@ -13,5 +13,4 @@ CopyTree.prototype = {
     }
 };
 
-//module.exports = new CopyTree();
-window.copytree = new CopyTree();
+module.exports = new CopyTree();
