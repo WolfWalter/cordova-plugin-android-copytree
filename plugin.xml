@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-plugin-android-copytree"
+    version="1.0.0">
+    <name>Cordva Plugin Android Copy Tree</name>
+    <description>Copies the Contents of an external Source into the internal Storage.</description>
+    <author>Uwe Klawitter</author>
+    <keywords>copy,internal,external,document-tree</keywords>
+    <license>Apache 2.0 License</license>
+    <engines>
+        <engine name="cordova" version=">=6.4.0"></engine>
+        <engine name="cordova-android" version=">=5.2.2"></engine>
+    </engines>
+
+    <js-module src="www/copytree.js" name="copytree">
+        <clobbers target="cordova.copytree" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="CopyTree">
+                <param name="android-package" value="de.cowabuja.copytree.CopyTreePlugin"/>
+            </feature>
+        </config-file>
+        <framework src="com.android.support:appcompat-v7:23.4.0"/>
+        <source-file src="platforms/android/src/de/cowabuja/copytree/CopyTreePlugin.java" target-dir="src/de/cowabuja/copytree"/>
+    </platform>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+</plugin>
