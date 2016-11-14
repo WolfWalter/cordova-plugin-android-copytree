@@ -72,6 +72,7 @@ public class CopyTreePlugin extends CordovaPlugin {
             Log.i(TAG, "external directory: " + externalFile.getUri());
 
             try {
+                internalFile.delete();
                 CopyService.copy(activity.getContentResolver(), externalFile, internalFile);
                 callback.success();
             } catch (IOException e) {
