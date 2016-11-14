@@ -25,6 +25,7 @@
         </config-file>
         <framework src="com.android.support:appcompat-v7:23.4.0"/>
         <source-file src="platforms/android/src/de/cowabuja/copytree/CopyTreePlugin.java" target-dir="src/de/cowabuja/copytree"/>
+        <source-file src="platforms/android/src/de/cowabuja/copytree/CopyService.java" target-dir="src/de/cowabuja/copytree"/>
     </platform>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
