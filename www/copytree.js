@@ -3,10 +3,10 @@ var exec = require('cordova/exec');
 
 module.exports = {
     copyToInternal: function(success, fail) {
-        exec(success, fail, "CopyTreePlugin", "copyToInternal");
+        exec(success, fail, "CopyTreePlugin", "copyToInternal", []);
     },
 
     copyToExternal: function(success, fail) {
-        exec(success, fail, "CopyTreePlugin", "copyToExternal");
+        exec(success, fail, "CopyTreePlugin", "copyToExternal", []);
     }
 }
