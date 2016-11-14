@@ -7,6 +7,7 @@ import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -20,15 +21,23 @@ public class CopyTreePlugin extends CordovaPlugin {
     private static final int ACTION_COPY_TO_EXTERNAL_CODE = 55;
     private DocumentFile externalFile;
     private DocumentFile internalFile;
+    private CallbackContext callback;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        Log.i(TAG, "execute");
+        boolean result = false;
         Activity activity = cordova.getActivity();
         internalFile = DocumentFile.fromFile(new File(activity.getApplicationInfo().dataDir));
 
         if (action.equals(ACTION_COPY_TO_INTERNAL)) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             cordova.startActivityForResult(this, intent, ACTION_COPY_TO_EXTERNAL_CODE);
+            PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
+            pluginResult.setKeepCallback(true);
+            callbackContext.sendPluginResult(pluginResult);
+            callback = callbackContext;
+            result = true;
         } else if (action.equals(ACTION_COPY_TO_EXTERNAL)) {
             if (externalFile == null) {
                 Log.e(TAG, "external file not defined");
@@ -36,30 +45,35 @@ public class CopyTreePlugin extends CordovaPlugin {
 
             try {
                 CopyService.copy(activity.getContentResolver(), internalFile, externalFile);
+                callbackContext.success();
+                result = true;
             } catch (IOException e) {
                 e.printStackTrace();
+                result = false;
             }
         }
 
-        return super.execute(action, args, callbackContext);
+        return result;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == ACTION_COPY_TO_EXTERNAL_CODE && resultCode == Activity.RESULT_OK) {
-            if (intent != null) {
-                Activity activity = cordova.getActivity();
-                externalFile = DocumentFile.fromTreeUri(
-                        activity.getApplicationContext(), intent.getData());
+        if (requestCode == ACTION_COPY_TO_EXTERNAL_CODE
+                && resultCode == Activity.RESULT_OK
+                && callback != null
+                && intent != null) {
 
-                try {
-                    CopyService.copy(activity.getContentResolver(), externalFile, internalFile);
-                } catch (IOException e) {
-                    //TODO exception handling is bad here...
-                    e.printStackTrace();
-                }
+            Activity activity = cordova.getActivity();
+            externalFile = DocumentFile.fromTreeUri(
+                    activity.getApplicationContext(), intent.getData());
+
+            try {
+                CopyService.copy(activity.getContentResolver(), externalFile, internalFile);
+                callback.success();
+            } catch (IOException e) {
+                callback.error(e.getMessage());
+                e.printStackTrace();
             }
         }
-        super.onActivityResult(requestCode, resultCode, intent);
     }
 }
