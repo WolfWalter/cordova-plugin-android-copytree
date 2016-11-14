@@ -2,6 +2,7 @@ package de.cowabuja.copytree;
 
 import android.content.ContentResolver;
 import android.support.v4.provider.DocumentFile;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,13 +13,17 @@ import java.io.OutputStream;
  */
 
 public class CopyService {
+    private static final String TAG = "CopyService";
+
     public static void copy(ContentResolver contentResolver, DocumentFile sourceDir, DocumentFile targetDir) throws IOException {
         for (DocumentFile sourceFile : sourceDir.listFiles()) {
             if (sourceFile.isDirectory()) {
+                Log.i(TAG, "source dir: " + sourceFile.getName());
+                Log.i(TAG, "target dir: " + targetDir.getName());
                 CopyService.copy(
                         contentResolver,
                         sourceFile,
-                        targetDir.createDirectory(sourceDir.getName()));
+                        targetDir.createDirectory(sourceFile.getName()));
             }
             if (sourceFile.isFile()) {
                 DocumentFile targetFile = targetDir.createFile(
