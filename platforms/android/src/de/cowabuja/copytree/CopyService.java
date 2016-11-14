@@ -27,8 +27,7 @@ public class CopyService {
                         includeDirs);
             }
             if (sourceFile.isFile()) {
-                DocumentFile targetFile = targetDir.createFile(
-                        sourceFile.getType(), sourceFile.getName());
+                DocumentFile targetFile = targetDir.createFile(null, sourceFile.getName());
 
                 InputStream is = contentResolver.openInputStream(sourceFile.getUri());
                 OutputStream os = contentResolver.openOutputStream(targetFile.getUri());
