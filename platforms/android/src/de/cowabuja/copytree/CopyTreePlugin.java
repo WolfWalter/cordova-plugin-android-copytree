@@ -16,6 +16,7 @@ import java.io.IOException;
 
 public class CopyTreePlugin extends CordovaPlugin {
     private static final String TAG = "CopyTreePlugin";
+    private static final String TREE_EXPORT_DIR = "TREE_EXPORT";
     private static final String ACTION_COPY_TO_INTERNAL = "copyToInternal";
     private static final String ACTION_COPY_TO_EXTERNAL = "copyToExternal";
     private static final int ACTION_COPY_TO_EXTERNAL_CODE = 55;
@@ -28,7 +29,8 @@ public class CopyTreePlugin extends CordovaPlugin {
         Log.i(TAG, "execute");
         boolean result = false;
         Activity activity = cordova.getActivity();
-        internalFile = DocumentFile.fromFile(cordova.getActivity().getFilesDir());
+
+        internalFile = DocumentFile.fromFile(new File(activity.getCacheDir(), TREE_EXPORT_DIR));
         Log.i(TAG, "internal directory: " + internalFile.getUri());
 
         if (action.equals(ACTION_COPY_TO_INTERNAL)) {

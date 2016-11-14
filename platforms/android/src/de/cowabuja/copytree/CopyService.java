@@ -13,9 +13,18 @@ import java.io.OutputStream;
 
 public class CopyService {
     public static void copy(ContentResolver contentResolver, DocumentFile sourceDir, DocumentFile targetDir) throws IOException {
+        targetDir.delete();
+
         for (DocumentFile sourceFile : sourceDir.listFiles()) {
+            if (sourceFile.isDirectory()) {
+                CopyService.copy(
+                        contentResolver,
+                        sourceFile,
+                        targetDir.createDirectory(sourceDir.getName()));
+            }
             if (sourceFile.isFile()) {
-                DocumentFile targetFile = targetDir.createFile(sourceFile.getType(), sourceFile.getName());
+                DocumentFile targetFile = targetDir.createFile(
+                        sourceFile.getType(), sourceFile.getName());
 
                 InputStream is = contentResolver.openInputStream(sourceFile.getUri());
                 OutputStream os = contentResolver.openOutputStream(targetFile.getUri());
