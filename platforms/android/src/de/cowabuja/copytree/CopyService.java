@@ -16,10 +16,10 @@ public class CopyService {
     private static final String TAG = "CopyService";
 
     public static void copy(ContentResolver contentResolver, DocumentFile sourceDir, DocumentFile targetDir) throws IOException {
+        Log.i(TAG, "copy " + sourceDir.getName() + " to " + targetDir.getName());
+
         for (DocumentFile sourceFile : sourceDir.listFiles()) {
             if (sourceFile.isDirectory()) {
-                Log.i(TAG, "source dir: " + sourceFile.getName());
-                Log.i(TAG, "target dir: " + targetDir.getName());
                 CopyService.copy(
                         contentResolver,
                         sourceFile,
