@@ -4,11 +4,11 @@ function CopyTree() {
 }
 
 CopyTree.prototype = {
-    copyToInternal: function() {
+    copyToInternal: function(success, fail) {
         cordova.exec(success, fail, copytreeName, "copyToInternal");
     },
 
-    copyToExternal: function() {
+    copyToExternal: function(success, fail) {
         cordova.exec(success, fail, copytreeName, "copyToExternal");
     }
 };
