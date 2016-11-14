@@ -1,16 +1,12 @@
 var copytreeName = 'CopyTreePlugin';
+var exec = require('cordova/exec');
 
-function CopyTree() {
-}
-
-CopyTree.prototype = {
+module.exports = {
     copyToInternal: function(success, fail) {
-        cordova.exec(success, fail, copytreeName, "copyToInternal");
+        exec(success, fail, "CopyTreePlugin", "copyToInternal");
     },
 
     copyToExternal: function(success, fail) {
-        cordova.exec(success, fail, copytreeName, "copyToExternal");
+        exec(success, fail, "CopyTreePlugin", "copyToExternal");
     }
-};
-
-module.exports = new CopyTree();
+}
