@@ -60,7 +60,12 @@ public class CopyTreePlugin extends CordovaPlugin {
             cordova.getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
-                    copyToExternal();
+                    try {
+                        copyToExternal(args.getBoolean(0));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.error(e.getMessage());
+                    }
                 }
             });
 
@@ -70,7 +75,7 @@ public class CopyTreePlugin extends CordovaPlugin {
         return result;
     }
 
-    private void copyToExternal() {
+    private void copyToExternal(boolean includeDirs) {
         if (externalFile == null) {
             Log.e(TAG, "external file not defined");
         }
@@ -80,7 +85,7 @@ public class CopyTreePlugin extends CordovaPlugin {
                 child.delete();
             }
 
-            CopyService.copy(cordova.getActivity().getContentResolver(), internalFile, externalFile, true);
+            CopyService.copy(cordova.getActivity().getContentResolver(), internalFile, externalFile, includeDirs);
             callback.success();
         } catch (IOException e) {
             e.printStackTrace();
