@@ -38,7 +38,7 @@ public class CopyService {
     }
 
     private static void copyInputToOutputStream(InputStream is, OutputStream os) throws IOException {
-        byte[] buffer = new byte[1024*1024];
+        byte[] buffer = new byte[1024];
         int bytesRead;
 
         while ((bytesRead = is.read(buffer)) != -1) {
