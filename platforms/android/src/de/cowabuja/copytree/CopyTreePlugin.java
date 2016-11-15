@@ -34,7 +34,7 @@ public class CopyTreePlugin extends CordovaPlugin {
     }
 
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, final JSONArray args, CallbackContext callbackContext) throws JSONException {
         boolean result = false;
 
         PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
@@ -46,7 +46,12 @@ public class CopyTreePlugin extends CordovaPlugin {
             cordova.getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
-                    copyToInternal();
+                    try {
+                        copyToInternal(args.getBoolean(0));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.error(e.getMessage());
+                    }
                 }
             });
 
@@ -83,15 +88,25 @@ public class CopyTreePlugin extends CordovaPlugin {
         }
     }
 
-    private void copyToInternal() {
-        internalFile = cacheDir.createDirectory(TREE_EXPORT_DIR);
-        for (DocumentFile child : internalFile.listFiles()) {
-            child.delete();
-        }
-        Log.i(TAG, "internal directory: " + internalFile.getUri());
+    private void copyToInternal(boolean showFileChooser) {
+        if (showFileChooser) {
+            internalFile = cacheDir.createDirectory(TREE_EXPORT_DIR);
+            for (DocumentFile child : internalFile.listFiles()) {
+                child.delete();
+            }
+            Log.i(TAG, "internal directory: " + internalFile.getUri());
 
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        cordova.startActivityForResult(this, intent, ACTION_COPY_TO_EXTERNAL_CODE);
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            cordova.startActivityForResult(this, intent, ACTION_COPY_TO_EXTERNAL_CODE);
+        } else {
+            try {
+                CopyService.copy(cordova.getActivity().getContentResolver(), externalFile, internalFile, false);
+                callback.success();
+            } catch (IOException e) {
+                e.printStackTrace();
+                callback.error(e.getMessage());
+            }
+        }
     }
 
     @Override
