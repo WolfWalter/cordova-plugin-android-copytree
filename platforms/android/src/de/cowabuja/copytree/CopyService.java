@@ -45,8 +45,8 @@ public class CopyService {
             os.write(buffer, 0, bytesRead);
         }
 
-        is.close();
         os.flush();
+        is.close();
         os.close();
     }
 }
