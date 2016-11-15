@@ -34,8 +34,9 @@ public class CopyTreePlugin extends CordovaPlugin {
 
         if (action.equals(ACTION_COPY_TO_INTERNAL)) {
             internalFile = cacheDir.createDirectory(TREE_EXPORT_DIR);
-            internalFile.delete();
-            internalFile = cacheDir.createDirectory(TREE_EXPORT_DIR);
+            for (DocumentFile child : internalFile.listFiles()) {
+                child.delete();
+            }
             Log.i(TAG, "internal directory: " + internalFile.getUri());
 
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
@@ -51,6 +52,10 @@ public class CopyTreePlugin extends CordovaPlugin {
             }
 
             try {
+                for (DocumentFile child : externalFile.listFiles()) {
+                    child.delete();
+                }
+
                 CopyService.copy(activity.getContentResolver(), internalFile, externalFile, true);
                 callbackContext.success();
                 result = true;
