@@ -8,10 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- * Created by uwe on 11.11.16.
- */
-
 public class CopyService {
     private static final String TAG = "CopyService";
 

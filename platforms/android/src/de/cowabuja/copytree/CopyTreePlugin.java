@@ -81,8 +81,8 @@ public class CopyTreePlugin extends CordovaPlugin {
         }
 
         try {
-            for (DocumentFile child : externalFile.listFiles()) {
-                child.delete();
+            for (DocumentFile internalChild : internalFile.listFiles()) {
+                externalFile.findFile(internalChild.getName()).delete();
             }
 
             CopyService.copy(cordova.getActivity().getContentResolver(), internalFile, externalFile, includeDirs);
