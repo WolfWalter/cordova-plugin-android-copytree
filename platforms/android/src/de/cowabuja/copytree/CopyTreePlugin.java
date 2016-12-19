@@ -84,7 +84,7 @@ public class CopyTreePlugin extends CordovaPlugin {
             for (DocumentFile internalChild : internalFile.listFiles()) {
                 DocumentFile externalChild = externalFile.findFile(internalChild.getName());
 
-                if (externalChild.exists()) {
+                if (externalChild != null && externalChild.exists()) {
                     externalChild.delete();
                 }
             }
