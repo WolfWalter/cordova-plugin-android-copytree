@@ -16,6 +16,8 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.IOException;
 
+import org.json.JSONObject;
+
 public class CopyTreePlugin extends CordovaPlugin {
     private static final String TAG = "CopyTreePlugin";
     private static final String TREE_EXPORT_DIR = "TREE_EXPORT";
@@ -94,6 +96,9 @@ public class CopyTreePlugin extends CordovaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
             callback.error(e.getMessage());
+        } catch (JSONException e) {
+            callback.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -114,6 +119,9 @@ public class CopyTreePlugin extends CordovaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
                 callback.error(e.getMessage());
+            } catch (JSONException e) {
+                callback.error(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -131,9 +139,12 @@ public class CopyTreePlugin extends CordovaPlugin {
             Log.i(TAG, "external directory: " + externalFile.getUri());
 
             try {
-                CopyService.copy(activity.getContentResolver(), externalFile, internalFile, false);
-                callback.success();
+                JSONObject filesDataJson = CopyService.copy(activity.getContentResolver(), externalFile, internalFile, false);
+                callback.success(filesDataJson);
             } catch (IOException e) {
+                callback.error(e.getMessage());
+                e.printStackTrace();
+            } catch (JSONException e) {
                 callback.error(e.getMessage());
                 e.printStackTrace();
             }
