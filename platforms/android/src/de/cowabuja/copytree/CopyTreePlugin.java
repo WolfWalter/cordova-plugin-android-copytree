@@ -112,53 +112,26 @@ public class CopyTreePlugin extends CordovaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
             callback.error(e.getMessage());
-        } catch (JSONException e) {
-            callback.error(e.getMessage());
-            e.printStackTrace();
         }
     }
 
     private void copyToInternal() {
-        //TODO: only if folder is selected
-/*
+        if (externalFile != null) {
+
             internalFile = cacheDir.createDirectory(TREE_EXPORT_DIR);
             for (DocumentFile child : internalFile.listFiles()) {
                 child.delete();
             }
             Log.i(TAG, "internal directory: " + internalFile.getUri());
 
-
-
-            Activity activity = cordova.getActivity();
-            externalFile = DocumentFile.fromTreeUri(
-                    activity.getApplicationContext(), intent.getData());
-            Log.i(TAG, "external directory: " + externalFile.getUri());
-
-            try {
-                JSONObject filesDataJson = CopyService.copy(activity.getContentResolver(), externalFile, internalFile, false);
-                callback.success(filesDataJson);
-            } catch (IOException e) {
-                callback.error(e.getMessage());
-                e.printStackTrace();
-            } catch (JSONException e) {
-                callback.error(e.getMessage());
-                e.printStackTrace();
-            }
-        } else
-
-
-
             try {
                 CopyService.copy(cordova.getActivity().getContentResolver(), externalFile, internalFile, false);
                 callback.success();
             } catch (IOException e) {
-                e.printStackTrace();
-                callback.error(e.getMessage());
-            } catch (JSONException e) {
                 callback.error(e.getMessage());
                 e.printStackTrace();
             }
-*/
+        }
     }
 
     @Override
@@ -172,8 +145,9 @@ public class CopyTreePlugin extends CordovaPlugin {
                     activity.getApplicationContext(), intent.getData());
             Log.i(TAG, "external directory to get files: " + externalFile.getUri());
 
+
             try {
-                JSONObject filesDataJson = CopyService.getFiles(activity.getContentResolver(), externalFile);
+                JSONArray filesDataJson = CopyService.getFiles(activity.getContentResolver(), externalFile);
                 callback.success(filesDataJson);
             } catch (IOException e) {
                 callback.error(e.getMessage());
