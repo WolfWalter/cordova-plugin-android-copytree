@@ -15,7 +15,7 @@ import org.json.JSONException;
 public class CopyService {
     private static final String TAG = "CopyService";
 
-    public static JSONArray getFiles(ContentResolver contentResolver, DocumentFile sourceDir) throws IOException, JSONException   {
+    public static JSONObject getFiles(ContentResolver contentResolver, DocumentFile sourceDir) throws IOException, JSONException   {
         Log.i(TAG, "get files from  " + sourceDir.getName());
 
         JSONArray filesDataJson = new JSONArray();
@@ -32,7 +32,11 @@ public class CopyService {
             }
         }
 
-        return filesDataJson;
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("path", sourceDir.getUri());
+        resultJson.put("filesData", filesDataJson);
+
+        return resultJson;
     }
 
     public static void copy(ContentResolver contentResolver, DocumentFile sourceDir, DocumentFile targetDir, boolean includeDirs) throws IOException   {

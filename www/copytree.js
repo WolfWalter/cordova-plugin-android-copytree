@@ -6,11 +6,11 @@ module.exports = {
         exec(success, fail, "CopyTreePlugin", "getFilesFromFileChooser", []);
     },
 
-    copyToInternal: function(success, fail) {
-        exec(success, fail, "CopyTreePlugin", "copyToInternal", []);
+    copyToInternal: function(externalPath, success, fail) {
+        exec(success, fail, "CopyTreePlugin", "copyToInternal", [externalPath]);
     },
 
-    copyToExternal: function(includeDirs, success, fail) {
-        exec(success, fail, "CopyTreePlugin", "copyToExternal", [includeDirs]);
+    copyToExternal: function(externalPath, includeDirs, success, fail) {
+        exec(success, fail, "CopyTreePlugin", "copyToExternal", [externalPath, includeDirs]);
     }
 }

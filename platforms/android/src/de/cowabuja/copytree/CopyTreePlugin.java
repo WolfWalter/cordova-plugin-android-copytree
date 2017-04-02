@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
+import android.net.Uri;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -27,7 +28,6 @@ public class CopyTreePlugin extends CordovaPlugin {
     private static final int ACTION_COPY_TO_EXTERNAL_CODE = 55;
     private static final int ACTION_GET_FILES = 56;
     private DocumentFile cacheDir;
-    private DocumentFile externalFile;
     private DocumentFile internalFile;
     private CallbackContext callback;
 
@@ -50,12 +50,12 @@ public class CopyTreePlugin extends CordovaPlugin {
             cordova.getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
-                    //try {
-                    copyToInternal();
-                    /*} catch (JSONException e) {
+                    try {
+                        copyToInternal(args.getString(0));
+                    } catch (JSONException e) {
                         e.printStackTrace();
                         callback.error(e.getMessage());
-                    }*/
+                    }
                 }
             });
 
@@ -65,7 +65,7 @@ public class CopyTreePlugin extends CordovaPlugin {
                 @Override
                 public void run() {
                     try {
-                        copyToExternal(args.getBoolean(0));
+                        copyToExternal(args.getString(0), args.getBoolean(1));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         callback.error(e.getMessage());
@@ -93,12 +93,14 @@ public class CopyTreePlugin extends CordovaPlugin {
         cordova.startActivityForResult(this, intent, ACTION_GET_FILES);
     }
 
-    private void copyToExternal(boolean includeDirs) {
-        if (externalFile == null) {
-            Log.e(TAG, "external file not defined");
-        }
-
+    private void copyToExternal(String externalPath, boolean includeDirs) {
+        Log.i(TAG, "external path: " + externalPath);
         try {
+            DocumentFile externalFile = DocumentFile.fromTreeUri(
+                    cordova.getActivity().getApplicationContext(), Uri.parse(externalPath));
+
+            Log.i(TAG, "external directory: " + externalFile.getUri());
+
             for (DocumentFile internalChild : internalFile.listFiles()) {
                 DocumentFile externalChild = externalFile.findFile(internalChild.getName());
 
@@ -112,25 +114,34 @@ public class CopyTreePlugin extends CordovaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
             callback.error(e.getMessage());
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            callback.error(e.getMessage());
         }
     }
 
-    private void copyToInternal() {
-        if (externalFile != null) {
+    private void copyToInternal(String externalPath) {
+        Log.i(TAG, "external path: " + externalPath);
+        internalFile = cacheDir.createDirectory(TREE_EXPORT_DIR);
+        for (DocumentFile child : internalFile.listFiles()) {
+            child.delete();
+        }
+        Log.i(TAG, "internal directory: " + internalFile.getUri());
 
-            internalFile = cacheDir.createDirectory(TREE_EXPORT_DIR);
-            for (DocumentFile child : internalFile.listFiles()) {
-                child.delete();
-            }
-            Log.i(TAG, "internal directory: " + internalFile.getUri());
+        try {
+            DocumentFile externalFile = DocumentFile.fromTreeUri(
+                    cordova.getActivity().getApplicationContext(), Uri.parse(externalPath));
 
-            try {
-                CopyService.copy(cordova.getActivity().getContentResolver(), externalFile, internalFile, false);
-                callback.success();
-            } catch (IOException e) {
-                callback.error(e.getMessage());
-                e.printStackTrace();
-            }
+            Log.i(TAG, "external directory: " + externalFile.getUri());
+
+            CopyService.copy(cordova.getActivity().getContentResolver(), externalFile, internalFile, false);
+            callback.success();
+        } catch (IOException e) {
+            callback.error(e.getMessage());
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            callback.error(e.getMessage());
         }
     }
 
@@ -141,14 +152,14 @@ public class CopyTreePlugin extends CordovaPlugin {
                 && callback != null
                 && intent != null){
             Activity activity = cordova.getActivity();
-            externalFile = DocumentFile.fromTreeUri(
+            DocumentFile externalFile = DocumentFile.fromTreeUri(
                     activity.getApplicationContext(), intent.getData());
             Log.i(TAG, "external directory to get files: " + externalFile.getUri());
 
 
             try {
-                JSONArray filesDataJson = CopyService.getFiles(activity.getContentResolver(), externalFile);
-                callback.success(filesDataJson);
+                JSONObject resultJson = CopyService.getFiles(activity.getContentResolver(), externalFile);
+                callback.success(resultJson);
             } catch (IOException e) {
                 callback.error(e.getMessage());
                 e.printStackTrace();
