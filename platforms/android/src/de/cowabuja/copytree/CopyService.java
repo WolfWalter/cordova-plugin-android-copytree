@@ -8,16 +8,39 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
 public class CopyService {
     private static final String TAG = "CopyService";
 
-    public static JSONObject copy(ContentResolver contentResolver, DocumentFile sourceDir, DocumentFile targetDir, boolean includeDirs) throws IOException, JSONException   {
-        Log.i(TAG, "copy " + sourceDir.getName() + " to " + targetDir.getName());
+    public static JSONObject getFiles(ContentResolver contentResolver, DocumentFile sourceDir) throws IOException, JSONException   {
+        Log.i(TAG, "get files from  " + sourceDir.getName());
 
-        JSONObject filesDataJson = new JSONObject();
+        JSONArray filesDataJson = new JSONArray();
+
+        for (DocumentFile sourceFile : sourceDir.listFiles()) {
+            if (sourceFile.isFile()) {
+                long lastModified = sourceFile.lastModified();
+                Log.i("lastMod", "lastMod " + sourceFile.getName() + " is " + lastModified);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("name", sourceFile.getName());
+                jsonObject.put("modificationDate", lastModified);
+                filesDataJson.put(jsonObject);
+            }
+        }
+
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("path", sourceDir.getUri());
+        resultJson.put("filesData", filesDataJson);
+
+        return resultJson;
+    }
+
+    public static void copy(ContentResolver contentResolver, DocumentFile sourceDir, DocumentFile targetDir, boolean includeDirs) throws IOException   {
+        Log.i(TAG, "copy " + sourceDir.getName() + " to " + targetDir.getName());
 
         for (DocumentFile sourceFile : sourceDir.listFiles()) {
             if (sourceFile.isDirectory() && includeDirs) {
@@ -34,15 +57,8 @@ public class CopyService {
                 OutputStream os = contentResolver.openOutputStream(targetFile.getUri());
 
                 copyInputToOutputStream(is, os);
-                
-                long lastModified = sourceFile.lastModified();
-                Log.i("lastMod", "lastMod " + sourceFile.getName() + " is " + lastModified);
-                filesDataJson.put(sourceFile.getName(), lastModified);
-                // cannot set lastmodified in android
             }
         }
-
-        return filesDataJson;
     }
 
     private static void copyInputToOutputStream(InputStream is, OutputStream os) throws IOException {
