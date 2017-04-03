@@ -2,11 +2,15 @@ var copytreeName = 'CopyTreePlugin';
 var exec = require('cordova/exec');
 
 module.exports = {
-    copyToInternal: function(showFileChooser, success, fail) {
-        exec(success, fail, "CopyTreePlugin", "copyToInternal", [showFileChooser]);
+    getFilesFromFileChooser: function(success, fail) {
+        exec(success, fail, "CopyTreePlugin", "getFilesFromFileChooser", []);
     },
 
-    copyToExternal: function(includeDirs, success, fail) {
-        exec(success, fail, "CopyTreePlugin", "copyToExternal", [includeDirs]);
+    copyToInternal: function(externalPath, success, fail) {
+        exec(success, fail, "CopyTreePlugin", "copyToInternal", [externalPath]);
+    },
+
+    copyToExternal: function(externalPath, includeDirs, success, fail) {
+        exec(success, fail, "CopyTreePlugin", "copyToExternal", [externalPath, includeDirs]);
     }
 }
