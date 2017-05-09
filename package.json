@@ -1,0 +1,11 @@
+{
+  "name": "cordova-plugin-android-copytree",
+  "version": "1.0.0",
+  "cordova": {
+    "id": "cordova-plugin-android-copytree",
+    "platforms": [
+      "android"
+    ]
+  },
+  "description": "Copies the Contents of an external Source into the internal Storage."
+}
