@@ -15,7 +15,7 @@ import org.json.JSONException;
 public class CopyService {
     private static final String TAG = "CopyService";
 
-    public static JSONObject getFiles(ContentResolver contentResolver, DocumentFile sourceDir) throws IOException, JSONException   {
+    public static JSONObject getFiles(DocumentFile sourceDir) throws IOException, JSONException   {
         Log.i(TAG, "get files from  " + sourceDir.getName());
 
         JSONArray filesDataJson = new JSONArray();
