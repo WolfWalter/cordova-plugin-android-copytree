@@ -20,6 +20,11 @@ public class CopyService {
 
         JSONArray filesDataJson = new JSONArray();
 
+        if(!sourceDir.exists()){
+            Log.i(TAG, sourceDir.getName() + "does not exist");
+            throw new IOException("not found");
+        }
+
         for (DocumentFile sourceFile : sourceDir.listFiles()) {
             if (sourceFile.isFile()) {
                 long lastModified = sourceFile.lastModified();
@@ -74,3 +79,4 @@ public class CopyService {
         os.close();
     }
 }
+
